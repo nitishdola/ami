@@ -1,0 +1,126 @@
+.papers{font-family: Arial; font-size: 13px; color: #fff; text-decoration: none;text-align: none;} 
+.papers:hover{font-family: Arial; font-size: 13px; color: #DDCEA5; text-decoration: none;text-align: none;}
+
+.papers1{font-family: Arial; font-size: 13px; color: #000; text-decoration: none;text-align: none;} 
+.papers1:hover{font-family: Arial; font-size: 13px; color: #0C0975; text-decoration: underline;text-align: none;}
+
+.papers2{font-family: Arial; font-size: 13px; color: #138BCE; text-decoration: none;text-align: none;} 
+.papers2:hover{font-family: Arial; font-size: 13px; color: #DDCEA5; text-decoration: none;text-align: none;}
+
+
+.TextMainline {
+	font-family: Arial;
+	font-size: 15px;
+	text-align: normal;
+	color: #DDCEA5;
+	text-decoration: none;
+}
+
+.h1 {
+	font-family: Arial;
+	font-size: 14px;
+	text-align: normal;
+	color: #6A6A6A;
+	line-height:18px;
+	text-decoration: none;
+}
+
+.h2 {
+	font-family: Arial;
+	font-size: 18px;
+	text-align: normal;
+	color: #fff;
+	line-height:18px;
+	text-decoration: none;
+}
+
+.h3 {
+	font-family: Arial;
+	font-size: 24px;
+	text-align: normal;
+	color: #333333;
+	line-height:18px;
+	text-decoration: none;
+}
+
+.h4 {
+	font-family: Arial;
+	font-size: 18px;
+	text-align: normal;
+	color: #62CE1F;
+	line-height:18px;
+	text-decoration: none;
+}
+
+.TextMain {
+	font-family: Arial;
+	font-size: 14px;
+	text-align: normal;
+	color: #0C0975;
+	line-height:22px;
+	text-decoration: none;
+}
+
+.TextMain1 {
+	font-family: Arial;
+	font-size: 14px;
+	text-align: normal;
+	color: #333333;
+	line-height:22px;
+	text-decoration: none;
+}
+
+.TextMain2 {
+	font-family: Arial;
+	font-size: 14px;
+	text-align: normal;
+	color: #0C0975;
+	line-height:22px;
+	text-decoration: none;
+}
+
+ .textbox { 
+    border: 1px dotted #000000; 
+    outline:0; 
+    height:27px; 
+    width: 275px; 
+  } 
+  
+   .textboxBig { 
+    border: 1px dotted #000000; 
+    outline:0; 
+    height:27px; 
+    width: 650px; 
+  }   
+  
+   .textboxSmall { 
+    border: 1px dotted #000000; 
+    outline:0; 
+    height:27px; 
+    width: 150px; 
+  } 
+  
+.button {
+    background-color: #0066CC;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+	width: 200px;
+}  
+
+.buttonGrey {
+    background-color: #999999;
+    border: none;
+    color: white;
+    padding: 6px 8px;
+    text-align: center;
+	font-weight:bold;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+	width: 150px;
+} 
