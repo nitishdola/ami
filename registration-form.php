@@ -6,7 +6,7 @@ session_start();
 
 $Sessid = session_id();
 
-var_dump($_SESSION);
+//var_dump($_SESSION);
 
 error_reporting(E_ALL ^ E_NOTICE);
 
@@ -522,7 +522,7 @@ body {
 
             <tr>
 
-              <td class="TextMain1"><strong>Year of Birth </strong></td>
+              <td class="TextMain1"><strong>Date of Birth </strong></td>
 
               <td><select name="cboDays" class="textbox" id="cboDays" style="width:70px;">
 
@@ -594,7 +594,7 @@ body {
 
             <tr>
 
-              <td class="TextMain1"><strong>Professional Role </strong></td>
+              <td class="TextMain1"><strong>Profession </strong></td>
 
               <td><label>
 
@@ -604,7 +604,7 @@ body {
                   
                   <option value="Student">Student</option>
 
-                  <option value="PhD Research Scholar">PhD Research Scholar</option>
+                  <option value="PhD/Research Scholar">PhD/Research Scholar</option>
 
                   <option value="Scientist">Scientist</option>
 
@@ -624,7 +624,7 @@ body {
 
             <tr>
 
-              <td class="TextMain1"><strong>Speciality</strong></td>
+              <td class="TextMain1"><strong>Specialization</strong></td>
 
               <td><table width="95%"  border="0" cellspacing="0" cellpadding="0">
 
@@ -660,7 +660,7 @@ body {
 
             <tr>
 
-              <td class="TextMain1"><strong>Main Workplace Type </strong></td>
+              <td class="TextMain1"><strong>Workplace </strong></td>
 
               <td><label>
 
@@ -1316,7 +1316,7 @@ body {
 
               <td><label>
 
-                <input name="txtEmail" type="email" class="textboxBig" id="txtEmail" required placeholder="EMAIL ADDRESS" />
+                <input name="txtEmail" value="<?php echo $_SESSION['email']?>" type="email" class="textboxBig" id="txtEmail" required placeholder="EMAIL ADDRESS" />
 
                 </label>
 

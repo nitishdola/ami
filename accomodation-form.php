@@ -157,10 +157,6 @@ $current_time = date('Y-m-d H:i:s') ;
 			$error_array['nationality'] = 'Nationality is empty !';
 		}
 
-		if( trim($txtPassportNumber) == '' ) {
-			$error_array['passport'] = 'Passport is empty !';
-		}
-
 		if( trim($txtAccommodationRequired) == '' ) {
 			$error_array['accommodation'] = 'Accommodation is empty !';
 		}
@@ -252,63 +248,78 @@ $current_time = date('Y-m-d H:i:s') ;
 	            :accommodation_required,
 	            :created_at
 	            )";
-	                                          
-		$stmt = $pdo->prepare($sql);
-		                                              
-		$stmt->bindParam(':title', $sboTitle, PDO::PARAM_STR);       
-		$stmt->bindParam(':first_name', $txtFirstName, PDO::PARAM_STR);       
-		$stmt->bindParam(':last_name', $txtFirstName, PDO::PARAM_STR);  
-		$stmt->bindParam(':dob', $txtDob, PDO::PARAM_STR);
-		$stmt->bindParam(':professional_role', $txtProfessionalRole, PDO::PARAM_STR); 
-		$stmt->bindParam(':speciality', $txtSpeciality, PDO::PARAM_STR);  
-		$stmt->bindParam(':speciality_others', $txtSpecialityOthers, PDO::PARAM_STR);  
-		$stmt->bindParam(':main_workplace_type', $txtMainWorkplaceType, PDO::PARAM_STR);  
-		$stmt->bindParam(':institution', $txtInstitution, PDO::PARAM_STR);  
-		$stmt->bindParam(':department', $txtDepartment, PDO::PARAM_STR);  
-		$stmt->bindParam(':position', $txtPosition, PDO::PARAM_STR);  
-		$stmt->bindParam(':address_1', $txtAdd1, PDO::PARAM_STR);  
-		$stmt->bindParam(':address_2', $txtAdd2, PDO::PARAM_STR);  
-		$stmt->bindParam(':address_3', $txtAdd3, PDO::PARAM_STR);  
-		$stmt->bindParam(':state', $txtState, PDO::PARAM_STR);  
-		$stmt->bindParam(':city', $txtCity, PDO::PARAM_STR);  
-		$stmt->bindParam(':pin', $txtPincode, PDO::PARAM_STR);  
-		$stmt->bindParam(':country', $cboCountry, PDO::PARAM_STR); 
-		$stmt->bindParam(':mobile', $txtMobileNo, PDO::PARAM_STR); 
-		$stmt->bindParam(':email', $txtEmail, PDO::PARAM_STR);
-		$stmt->bindParam(':nationality', $txtNationality, PDO::PARAM_STR);      	      	                          
-		$stmt->bindParam(':passport_number', $txtPassportNumber, PDO::PARAM_STR);
-		$stmt->bindParam(':valid_upto', $txtValidUpto, PDO::PARAM_STR); 
-		$stmt->bindParam(':issued_by', $txtIssuedBy, PDO::PARAM_STR);  
-		$stmt->bindParam(':accommodation_required', $txtAccommodationRequired, PDO::PARAM_STR);       	      		
-		$stmt->bindParam(':created_at', $current_time, PDO::PARAM_STR);                          
-		
-		if($stmt->execute()) {
-			//check if guests are added
-			if($txtAccommodationRequired == 'yes') {
-				if(count($accompanied_by)) {
-					$delegate_id = $pdo->lastInsertId();
-					//add the guests
-					foreach($accompanied_by as $value) {
-						$guest_name = '';
-						$guest_name = htmlentities($value);
+	    
+	    $pdo->beginTransaction();
 
-						$sql_guest = "INSERT INTO ami_delegate_guests(
-							delegate_id,
-			            	name
-			            ) VALUES (
-				            :delegate_id,
-				            :name
-				        )";
+	    try {                          
+			$stmt = $pdo->prepare($sql);
+			                                              
+			$stmt->bindParam(':title', $sboTitle, PDO::PARAM_STR);       
+			$stmt->bindParam(':first_name', $txtFirstName, PDO::PARAM_STR);       
+			$stmt->bindParam(':last_name', $txtLastName, PDO::PARAM_STR);  
+			$stmt->bindParam(':dob', $txtDob, PDO::PARAM_STR);
+			$stmt->bindParam(':professional_role', $txtProfessionalRole, PDO::PARAM_STR); 
+			$stmt->bindParam(':speciality', $txtSpeciality, PDO::PARAM_STR);  
+			$stmt->bindParam(':speciality_others', $txtSpecialityOthers, PDO::PARAM_STR);  
+			$stmt->bindParam(':main_workplace_type', $txtMainWorkplaceType, PDO::PARAM_STR);  
+			$stmt->bindParam(':institution', $txtInstitution, PDO::PARAM_STR);  
+			$stmt->bindParam(':department', $txtDepartment, PDO::PARAM_STR);  
+			$stmt->bindParam(':position', $txtPosition, PDO::PARAM_STR);  
+			$stmt->bindParam(':address_1', $txtAdd1, PDO::PARAM_STR);  
+			$stmt->bindParam(':address_2', $txtAdd2, PDO::PARAM_STR);  
+			$stmt->bindParam(':address_3', $txtAdd3, PDO::PARAM_STR);  
+			$stmt->bindParam(':state', $txtState, PDO::PARAM_STR);  
+			$stmt->bindParam(':city', $txtCity, PDO::PARAM_STR);  
+			$stmt->bindParam(':pin', $txtPincode, PDO::PARAM_STR);  
+			$stmt->bindParam(':country', $cboCountry, PDO::PARAM_STR); 
+			$stmt->bindParam(':mobile', $txtMobileNo, PDO::PARAM_STR); 
+			$stmt->bindParam(':email', $txtEmail, PDO::PARAM_STR);
+			$stmt->bindParam(':nationality', $txtNationality, PDO::PARAM_STR);      	      	                          
+			$stmt->bindParam(':passport_number', $txtPassportNumber, PDO::PARAM_STR);
+			$stmt->bindParam(':valid_upto', $txtValidUpto, PDO::PARAM_STR); 
+			$stmt->bindParam(':issued_by', $txtIssuedBy, PDO::PARAM_STR);  
+			$stmt->bindParam(':accommodation_required', $txtAccommodationRequired, PDO::PARAM_STR);       	      		
+			$stmt->bindParam(':created_at', $current_time, PDO::PARAM_STR);                          
+			
+			if($stmt->execute()) {
+				$delegate_id = $pdo->lastInsertId();
+				//check if guests are added
+				if($txtAccommodationRequired == 'yes') {
+					if(count($accompanied_by)) {
+						//add the guests
+						foreach($accompanied_by as $value) {
+							$guest_name = '';
+							$guest_name = htmlentities($value);
 
-				        $stmt_guest = $pdo->prepare($sql_guest);
-		                                              
-						$stmt_guest->bindParam(':delegate_id', $delegate_id, PDO::PARAM_STR);       
-						$stmt_guest->bindParam(':name', $guest_name, PDO::PARAM_STR);  
+							$sql_guest = "INSERT INTO ami_delegate_guests(
+								delegate_id,
+				            	name
+				            ) VALUES (
+					            :delegate_id,
+					            :name
+					        )";
 
-						$stmt_guest->execute();
+					        $stmt_guest = $pdo->prepare($sql_guest);
+			                                              
+							$stmt_guest->bindParam(':delegate_id', $delegate_id, PDO::PARAM_STR);       
+							$stmt_guest->bindParam(':name', $guest_name, PDO::PARAM_STR);  
+
+							$stmt_guest->execute();
+						}
 					}
+				}else{
+					//redirect to payment page
+					header('Location:payment-form.php?delegate_id='.$delegate_id);
 				}
 			}
+			$pdo->commit();
+		}catch (PDOException $e) {
+		    // roll back transaction
+		    $pdo->rollback();
+		    // log any errors to file
+		    ExceptionErrorHandler($e);
+		    require_once($footer_inc);
+		    exit;
 		}
 
 	}
@@ -737,13 +748,25 @@ body {
 
   </tr>
 
+  	<?php
+  		/*$statement = $pdo->prepare("
+  			SELECT ami_delegates.*, ami_delegate_guests.name
+			FROM ami_delegates
+			INNER JOIN ami_delegate_guests
+			ON ami_delegates.id = ami_delegate_guests.delegate_id
+			WHERE ami_delegates.id = :delegate_id
+  		");
+		$statement->execute(array(':delegate_id' => $delegate_id));
+		$row = $statement->fetch();
+		var_dump($row);*/
+	?>
   <tr>
 
     <td bgcolor="#FFFFFF"><table width="1180" border="0" align="center" cellpadding="0" cellspacing="0">
 
       <tr>
 
-        <td><form name="form1" id="form1" method="post" action="payment-form.php">
+        <td><form name="form1" id="form1" method="get" action="payment-form.php">
 
           <table width="100%" border="0" align="center" cellpadding="4" cellspacing="0">
 
@@ -786,7 +809,7 @@ body {
             </tr>
 
             <tr>
-
+            <input type="hidden" name="delegate_id" value="<?= $delegate_id; ?>">
               <td colspan="2" class="TextMain1" align="center"><input type="submit" name="Submit" value="Proceed to Payment"  class="button"/></td>
 
             </tr>
