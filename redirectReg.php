@@ -11,7 +11,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 //include ("include/globalInc.php");
 require_once('include/conn.inc.php');
 
-$url = 'http://localhost/ami';
+$url = 'http://ami2016.org';
 
 date_default_timezone_set('Asia/Kolkata');
 $current_time = date('Y-m-d H:i:s') ;
@@ -64,13 +64,29 @@ $current_time = date('Y-m-d H:i:s') ;
 
 			if($stmt->execute()) {
 				//send email
-				$to      = $email;
+				/*$to      = $email;
 				$subject = 'AMI Registration';
 				$message = 'Dear user,please click on the below link to register';
-				$message = '<a href="'.$url.'/activate-member?member_code='.$code.'">'.$url.'/activate-member?member_code='.$code.'</a>';
-				$headers = 'From: webmaster@ami.com' . "\r\n" .
-				    'Reply-To: webmaster@ami.com' . "\r\n" .
+				$message = $url.'/activate-member.php?member_code='.$code.'">';
+				$headers = 'From: no-reply@ami2016.org' . "\r\n" .
+				    'Reply-To: no-reply@ami2016.org' . "\r\n" .
 				    'X-Mailer: PHP/' . phpversion();
+				mail($to, $subject, $message, $headers);*/
+
+				$to = $email;
+
+				$subject = 'Complete Your AMI 2016 Registration';
+
+				$headers = "From: " . 'AMI 2016 Registration <no-reply@ami2016.org>' . "\r\n";
+				$headers .= "Reply-To: ". 'no-reply@ami2016.org' . "\r\n";
+				//$headers .= "CC: susan@example.com\r\n";
+				$headers .= "MIME-Version: 1.0\r\n";
+				$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+				$message .= '<p><strong>Thank You for registering AMI 2016 !</p>';
+				$message .= '<p>Please click on the link below to complete your registration process </p>';
+				$message = $url.'/activate-member.php?member_code='.$code;
+
 				mail($to, $subject, $message, $headers);
 
 				header("location: index.php?reg_success=success");

@@ -6,7 +6,9 @@ session_start();
 
 $Sessid = session_id();
 
-//var_dump($_SESSION);
+if(!isset($_SESSION['user_id'])) {
+  header('Location:index.php');
+}
 
 error_reporting(E_ALL ^ E_NOTICE);
 

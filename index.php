@@ -824,6 +824,7 @@ body {
 <div id="message">
   <h3>Thank You !</h3>
   <p>To Complete Your Registration Process, Please Check Your Registered Email </p>
+  <p>** If you do not receive the confirmation message within a few minutes of signing up, please check your Junk E-mail folder just in case the confirmation email got delivered there instead of your inbox</p>
 </div>
 </body>
 

@@ -14,7 +14,7 @@ if(isset($_GET['member_code']) && trim($_GET['member_code']) != '' ) {
 	$member_code = trim($_GET['member_code']);
 	//check if valid
 	$statement = $pdo->prepare("
-		SELECT first_name, last_name, email
+		SELECT id, first_name, last_name, email
 		FROM ami_users
 		WHERE code = :member_code
 		");
@@ -24,7 +24,8 @@ if(isset($_GET['member_code']) && trim($_GET['member_code']) != '' ) {
 		$_SESSION['FirstName'] 	= $row['first_name'];
 		$_SESSION['LastName'] 	= $row['last_name'];
 		$_SESSION['email'] 		= $row['email'];
-
+		$_SESSION['user_id'] 	= $row['id'];
+		
 		header('Location:registration-form.php');
 	}
 }
