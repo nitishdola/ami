@@ -6,6 +6,8 @@ session_start();
 
 $Sessid = session_id();
 
+var_dump($_SESSION);
+
 error_reporting(E_ALL ^ E_NOTICE);
 
 //include ("include/globalInc.php");
@@ -1424,11 +1426,11 @@ body {
 
               <td><label>
 
-                <input name="rdoAccomodation" id="accoRequired" type="radio" value="Yes" />
+                <input name="rdoAccomodation" id="accoRequired" type="radio" value="yes" />
 
                 <span class="TextMain1"><strong>Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-                <input name="rdoAccomodation"  id="accoNotRequired" type="radio" value="No" />
+                <input name="rdoAccomodation"  id="accoNotRequired" type="radio" value="no" />
 
                 <strong>No</strong></strong></span> </label></td>
 

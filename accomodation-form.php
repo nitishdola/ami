@@ -6,6 +6,8 @@ session_start();
 
 $Sessid = session_id();
 
+unset($_SESSION['reg_form_error']);
+
 error_reporting(E_ALL ^ E_NOTICE);
 
 //include ("include/globalInc.php");
@@ -18,7 +20,7 @@ $current_time = date('Y-m-d H:i:s') ;
 
 <?php
 
-	if($_POST['Submit'] == "Proceed") {
+	if($_POST['Submit'] == "Proceed") { 
 
 		$sboTitle 		= htmlentities($_POST['sboTitle']);
 
@@ -66,11 +68,103 @@ $current_time = date('Y-m-d H:i:s') ;
 
 		$txtIssuedBy 	= htmlentities($_POST['txtIssuedBy']);
 
-		$txtIssuedBy 	= htmlentities($_POST['txtIssuedBy']);
+		$txtValidUpto 	= htmlentities($_POST['cboPMnth']);
 
 		$txtAccommodationRequired	= htmlentities($_POST['rdoAccomodation']);
-		var_dump($_POST);
-		exit;
+
+		$accompanied_by = $_POST['accompanied_by'];
+
+
+		$error_array = [];
+
+		if( trim($sboTitle) == '' ) {
+			$error_array['title'] = 'Title is empty !';
+		}
+
+		if( trim($txtLastName) == '' ) {
+			$error_array['last_name'] = 'Last Name is empty !';
+		}
+
+		if( trim($txtFirstName) == '' ) {
+			$error_array['first_name'] = 'First Name is empty !';
+		}
+
+		if( trim($txtAdd1) == '' ) {
+			$error_array['address_1'] = 'Address field is empty !';
+		}
+
+		if( trim($txtState) == '' ) {
+			$error_array['state'] = 'State is empty !';
+		}
+
+		if( trim($cboCountry) == '' ) {
+			$error_array['country'] = 'Country is empty !';
+		}
+
+		if( trim($txtPincode) == '' ) {
+			$error_array['pin'] = 'PIN is empty !';
+		}
+
+		if( is_int( trim($txtPincode) ) ) {
+			$error_array['pin_number'] = 'PIN must be a number !';
+		}
+
+		if( trim($txtEmail) == '' ) {
+			$error_array['email'] = 'Email is empty !';
+		}
+
+		if (filter_var($txtEmail, FILTER_VALIDATE_EMAIL) === false) {
+		  	$error_array['email_valid'] = 'Email is not valid !';
+		}
+
+		if( trim($txtMobileNo) == '' ) {
+			$error_array['mobile'] = 'Mobile is empty !';
+		}
+
+		if( is_int( trim($txtMobileNo) ) ) {
+			$error_array['mobile_number'] = 'Mobile Number must be a number !';
+		}
+
+		if( trim($txtProfessionalRole) == '' ) {
+			$error_array['p_role'] = 'Professional Role is empty !';
+		}
+
+		if( trim($txtSpeciality) == '' ) {
+			$error_array['speciality'] = 'Speciality is empty !';
+		}
+
+		if( trim($txtMainWorkplaceType) == '' ) {
+			$error_array['main_w'] = 'Main Workplace Type is empty !';
+		}
+
+		if( trim($txtInstitution) == '' ) {
+			$error_array['institution'] = 'Institution / Company Name is empty !';
+		}
+
+		if( trim($txtDepartment) == '' ) {
+			$error_array['dept'] = 'Department/Section is empty !';
+		}
+
+		if( trim($txtPosition) == '' ) {
+			$error_array['position'] = 'Position is empty !';
+		}
+
+		if( trim($txtNationality) == '' ) {
+			$error_array['nationality'] = 'Nationality is empty !';
+		}
+
+		if( trim($txtNationality) == '' ) {
+			$error_array['nationality'] = 'Nationality is empty !';
+		}
+
+		if( trim($txtPassportNumber) == '' ) {
+			$error_array['passport'] = 'Passport is empty !';
+		}
+
+		if( trim($txtAccommodationRequired) == '' ) {
+			$error_array['accommodation'] = 'Accommodation is empty !';
+		}
+
 
 		$_SESSION['Title'] = $sboTitle;
 
@@ -96,6 +190,11 @@ $current_time = date('Y-m-d H:i:s') ;
 
 		$_SESSION['Mobile'] = $txtMobileNo;	
 
+
+		if(count($error_array)) {
+			$_SESSION['reg_form_error'] = $error_array;
+			header('Location: registration-form.php');
+		}
 		//save the data to database
 
 		$sql = "INSERT INTO ami_delegates(
@@ -104,8 +203,8 @@ $current_time = date('Y-m-d H:i:s') ;
 	            last_name,
 	            dob,
 	            professional_role,
-	            professional_role_others,
 	            speciality,
+	            speciality_others,
 	            main_workplace_type,
 	            institution,
 	            department,
@@ -131,8 +230,8 @@ $current_time = date('Y-m-d H:i:s') ;
 	            :last_name,
 	            :dob,
 	            :professional_role,
-	            :professional_role_others,
 	            :speciality,
+	            :speciality_others,
 	            :main_workplace_type,
 	            :institution,
 	            :department,
@@ -179,10 +278,38 @@ $current_time = date('Y-m-d H:i:s') ;
 		$stmt->bindParam(':nationality', $txtNationality, PDO::PARAM_STR);      	      	                          
 		$stmt->bindParam(':passport_number', $txtPassportNumber, PDO::PARAM_STR);
 		$stmt->bindParam(':valid_upto', $txtValidUpto, PDO::PARAM_STR); 
-		$stmt->bindParam(':issued_by', $txtIssuedby, PDO::PARAM_STR);  
+		$stmt->bindParam(':issued_by', $txtIssuedBy, PDO::PARAM_STR);  
 		$stmt->bindParam(':accommodation_required', $txtAccommodationRequired, PDO::PARAM_STR);       	      		
 		$stmt->bindParam(':created_at', $current_time, PDO::PARAM_STR);                          
-		$stmt->execute(); 
+		
+		if($stmt->execute()) {
+			//check if guests are added
+			if($txtAccommodationRequired == 'yes') {
+				if(count($accompanied_by)) {
+					$delegate_id = $pdo->lastInsertId();
+					//add the guests
+					foreach($accompanied_by as $value) {
+						$guest_name = '';
+						$guest_name = htmlentities($value);
+
+						$sql_guest = "INSERT INTO ami_delegate_guests(
+							delegate_id,
+			            	name
+			            ) VALUES (
+				            :delegate_id,
+				            :name
+				        )";
+
+				        $stmt_guest = $pdo->prepare($sql_guest);
+		                                              
+						$stmt_guest->bindParam(':delegate_id', $delegate_id, PDO::PARAM_STR);       
+						$stmt_guest->bindParam(':name', $guest_name, PDO::PARAM_STR);  
+
+						$stmt_guest->execute();
+					}
+				}
+			}
+		}
 
 	}
 
