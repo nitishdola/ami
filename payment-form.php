@@ -449,7 +449,7 @@ body {
 
       <tr>
 
-        <td><form name="form1" id="form1" method="post" action="#">
+        <td><form name="form1" id="form1" method="post" action="payment-response.php">
 
           <table width="100%" border="0" align="center" cellpadding="4" cellspacing="0">
 
@@ -459,7 +459,7 @@ body {
 
                   <tr>
 
-                    <td bgcolor="066DCC" class="h2"><strong>PAYMENT FORM </strong></td>
+                    <td bgcolor="066DCC" class="h2"><strong>PAYMENT FORM</strong></td>
 
                   </tr>
 
