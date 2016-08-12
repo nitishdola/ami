@@ -647,7 +647,7 @@ body {
           			<td class="TextMain1">
           				<table width="95%"  border="0" cellspacing="0" cellpadding="0">
                 			<tr>
-                  				<td width="40%"><?= $row['nationality']; ?></td>
+                  				<td width="40%"><?= ucfirst($row['nationality']); ?></td>
                 			</tr>
           				</table>
           			</td>

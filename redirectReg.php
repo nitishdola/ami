@@ -29,8 +29,16 @@ $current_time = date('Y-m-d H:i:s') ;
 		
 		$code 		= md5(uniqid ().date('d-m-Y H:i:s'));
 
-		/*//check if email already exists
-		$email = trim($_GET['email']);
+		if($first_name == '' || $last_name == '' || $email == '') {
+			header('Location:registration-form.php');
+		}
+
+		if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+		  	header('Location:registration-form.php');
+		}
+
+		//check if email already exists
+		$email = trim($_POST['email']);
 		//check if valid
 		$statement = $pdo->prepare("
 			SELECT first_name, last_name, email
@@ -40,10 +48,33 @@ $current_time = date('Y-m-d H:i:s') ;
 		$statement->execute(array(':email' => $email));
 		$row = $statement->fetch();
 		if($row) {
-			header('Location:registration-form.php');
-		}*/
+			//update the code
+			$sql = "UPDATE ami_users SET code = :code 
+            WHERE email = :email";
+			$stmt = $pdo->prepare($sql);                                  
+			$stmt->bindParam(':code',  $code,  PDO::PARAM_STR);
+			$stmt->bindParam(':email', $email, PDO::PARAM_STR);        
+			$stmt->execute(); 
 
-		$sql = "INSERT INTO ami_users(
+			$to = $email;
+
+			$subject = 'Complete Your AMI 2016 Registration';
+
+			$headers = "From: " . 'AMI 2016 Registration <no-reply@ami2016.org>' . "\r\n";
+			$headers .= "Reply-To: ". 'no-reply@ami2016.org' . "\r\n";
+			//$headers .= "CC: susan@example.com\r\n";
+			$headers .= "MIME-Version: 1.0\r\n";
+			$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+			$message .= '<p><strong>Thank You for registering AMI 2016 !</p>';
+			$message .= '<p>Please click on the link below to complete your registration process </p>';
+			$message .= $url.'/activate-member.php?member_code='.$code;
+
+			mail($to, $subject, $message, $headers);
+
+			header("location: index.php?reg_success=success");
+		} else {
+			$sql = "INSERT INTO ami_users(
 		            first_name,
 		            last_name,
 		            email,
@@ -55,53 +86,42 @@ $current_time = date('Y-m-d H:i:s') ;
 		            :code
 	            )";
 
-	    try {     
-		    $stmt = $pdo->prepare($sql);     
-			$stmt->bindParam(':first_name', $first_name, PDO::PARAM_STR);       
-			$stmt->bindParam(':last_name', $last_name, PDO::PARAM_STR);  
-			$stmt->bindParam(':email', $email, PDO::PARAM_STR);
-			$stmt->bindParam(':code', $code, PDO::PARAM_STR);
+		    try {     
+			    $stmt = $pdo->prepare($sql);     
+				$stmt->bindParam(':first_name', $first_name, PDO::PARAM_STR);       
+				$stmt->bindParam(':last_name', $last_name, PDO::PARAM_STR);  
+				$stmt->bindParam(':email', $email, PDO::PARAM_STR);
+				$stmt->bindParam(':code', $code, PDO::PARAM_STR);
 
-			if($stmt->execute()) {
-				//send email
-				/*$to      = $email;
-				$subject = 'AMI Registration';
-				$message = 'Dear user,please click on the below link to register';
-				$message = $url.'/activate-member.php?member_code='.$code.'">';
-				$headers = 'From: no-reply@ami2016.org' . "\r\n" .
-				    'Reply-To: no-reply@ami2016.org' . "\r\n" .
-				    'X-Mailer: PHP/' . phpversion();
-				mail($to, $subject, $message, $headers);*/
+				if($stmt->execute()) {
 
-				$to = $email;
+					$to = $email;
 
-				$subject = 'Complete Your AMI 2016 Registration';
+					$subject = 'Complete Your AMI 2016 Registration';
 
-				$headers = "From: " . 'AMI 2016 Registration <no-reply@ami2016.org>' . "\r\n";
-				$headers .= "Reply-To: ". 'no-reply@ami2016.org' . "\r\n";
-				//$headers .= "CC: susan@example.com\r\n";
-				$headers .= "MIME-Version: 1.0\r\n";
-				$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+					$headers = "From: " . 'AMI 2016 Registration <no-reply@ami2016.org>' . "\r\n";
+					$headers .= "Reply-To: ". 'no-reply@ami2016.org' . "\r\n";
+					//$headers .= "CC: susan@example.com\r\n";
+					$headers .= "MIME-Version: 1.0\r\n";
+					$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
 
-				$message .= '<p><strong>Thank You for registering AMI 2016 !</p>';
-				$message .= '<p>Please click on the link below to complete your registration process </p>';
-				$message = $url.'/activate-member.php?member_code='.$code;
+					$message .= '<p><strong>Thank You for registering AMI 2016 !</p>';
+					$message .= '<p>Please click on the link below to complete your registration process </p>';
+					$message = $url.'/activate-member.php?member_code='.$code;
 
-				mail($to, $subject, $message, $headers);
+					mail($to, $subject, $message, $headers);
 
-				header("location: index.php?reg_success=success");
+					header("location: index.php?reg_success=success");
+				}
+			}catch (PDOException $e) {
+			    // roll back transaction
+			    $pdo->rollback();
+			    // log any errors to file
+			    ExceptionErrorHandler($e);
+			    require_once($footer_inc);
+			    exit;
 			}
-		}catch (PDOException $e) {
-		    // roll back transaction
-		    $pdo->rollback();
-		    // log any errors to file
-		    ExceptionErrorHandler($e);
-		    require_once($footer_inc);
-		    exit;
 		}
-
-		//header("location: registration-form.php");		
-
 	}
 
 ?>
