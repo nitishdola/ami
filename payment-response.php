@@ -14,6 +14,8 @@ date_default_timezone_set('Asia/Kolkata');
 $current_time = date('Y-m-d H:i:s') ;
 //include ("include/globalInc.php");
 
+
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -26,9 +28,10 @@ $current_time = date('Y-m-d H:i:s') ;
 
 <title>57th International Annual Conference of the Association of Microbiologists of india</title>
 
+<link rel="stylesheet" type="text/css" href="css/alert/box.css" />
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <style>
-
-	
 
 	/* You don't need the above styles, they are demo-specific ----------- */
 
@@ -51,14 +54,7 @@ $current_time = date('Y-m-d H:i:s') ;
 		width: 1180px;
 
 		margin: 0px auto;
-
-	
-
-		
-
 	}
-
-	
 
 	#menu:before,
 
@@ -70,7 +66,6 @@ $current_time = date('Y-m-d H:i:s') ;
 
 	}
 
-	
 
 	#menu:after {
 
@@ -157,12 +152,6 @@ $current_time = date('Y-m-d H:i:s') ;
 		z-index: 1;    
 
 		background: #98CBF5;
-
-		
-
-		
-
-		
 
 		-moz-box-shadow: 0 -1px rgba(255,255,255,.7);
 
@@ -314,8 +303,6 @@ $current_time = date('Y-m-d H:i:s') ;
 
 	}
 
-	
-
 	#menu ul ul li:first-child a:after {
 
 		left: -6px;
@@ -334,6 +321,42 @@ $current_time = date('Y-m-d H:i:s') ;
 
 	}
 
+	.myButton {
+		-moz-box-shadow:inset 0px 1px 0px 0px #9acc85;
+		-webkit-box-shadow:inset 0px 1px 0px 0px #9acc85;
+		box-shadow:inset 0px 1px 0px 0px #9acc85;
+		background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #74ad5a), color-stop(1, #68a54b));
+		background:-moz-linear-gradient(top, #74ad5a 5%, #68a54b 100%);
+		background:-webkit-linear-gradient(top, #74ad5a 5%, #68a54b 100%);
+		background:-o-linear-gradient(top, #74ad5a 5%, #68a54b 100%);
+		background:-ms-linear-gradient(top, #74ad5a 5%, #68a54b 100%);
+		background:linear-gradient(to bottom, #74ad5a 5%, #68a54b 100%);
+		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#74ad5a', endColorstr='#68a54b',GradientType=0);
+		background-color:#74ad5a;
+		border:1px solid #3b6e22;
+		display:inline-block;
+		cursor:pointer;
+		color:#ffffff;
+		font-family:Arial;
+		font-size:13px;
+		font-weight:bold;
+		padding:10px 23px;
+		text-decoration:none;
+	}
+	.myButton:hover {
+		background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #68a54b), color-stop(1, #74ad5a));
+		background:-moz-linear-gradient(top, #68a54b 5%, #74ad5a 100%);
+		background:-webkit-linear-gradient(top, #68a54b 5%, #74ad5a 100%);
+		background:-o-linear-gradient(top, #68a54b 5%, #74ad5a 100%);
+		background:-ms-linear-gradient(top, #68a54b 5%, #74ad5a 100%);
+		background:linear-gradient(to bottom, #68a54b 5%, #74ad5a 100%);
+		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#68a54b', endColorstr='#74ad5a',GradientType=0);
+		background-color:#68a54b;
+	}
+	.myButton:active {
+		position:relative;
+		top:1px;
+	}
 
 
 	</style>
@@ -356,6 +379,14 @@ body {
 
 -->
 
+@media print {
+  	body {
+  		font-size: 10px;
+  		line-height: 16px;
+  	}
+}
+
+
 </style>
 
 <link href="css/style.css" rel="stylesheet" type="text/css" />
@@ -366,7 +397,7 @@ body {
 
 <body>
 
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<table width="100%" border="0" cellspacing="0" cellpadding="0"  style="table-layout: fixed; width: 100%;">
 
   <tr>
 
@@ -404,8 +435,28 @@ body {
 
   </tr>
 
+  <?php
+  	$_POST['customer_id'] = 'AMI86586';
+  	require_once('gateway/verification.php');
 
 
+  	//guest details
+  	$statement = $pdo->prepare("
+  			SELECT ami_delegates.*, ami_delegate_guests.name, ami_delegate_payments.customer_id
+			FROM ami_delegates
+			INNER JOIN ami_delegate_guests
+			ON ami_delegates.id = ami_delegate_guests.delegate_id
+			INNER JOIN ami_delegate_payments
+			ON ami_delegates.id = ami_delegate_payments.delegate_id
+			WHERE ami_delegate_payments.customer_id = :customer_id
+  		");
+		$statement->execute(array(':customer_id' => $customer_id));
+		$row = $statement->fetch();
+		//var_dump($row);
+  ?>
+
+
+  <?php if($success): ?>
   <tr>
 
     <td bgcolor="#FFFFFF"><table width="1180" border="0" align="center" cellpadding="0" cellspacing="0">
@@ -417,79 +468,219 @@ body {
           <table width="100%" border="0" align="center" cellpadding="4" cellspacing="0">
 
             <tr>
-
-              <td width="24%" class="TextMain1"><table width="100%" border="0" cellspacing="3" cellpadding="3">
+            <td> 
+              <td width="40%" class="TextMain1"><table width="100%" border="0" cellspacing="3" cellpadding="3">
 
                   <tr>
-
-                    <td bgcolor="066DCC" class="h2"><strong>PAYMENT FORM </strong></td>
+                  	<div class="alert-box success"><span>Success ! </span>Your payment was successfull !</div>
 
                   </tr>
 
               </table></td>
 
-              <td width="76%">&nbsp;</td>
+            <td width="76%">&nbsp;</td>
 
             </tr>
+            <tbody  class="printArea">
+            	<tr>
+            		<td class="TextMain1">Guest Registration ID</td>
+          			<td class="TextMain1">
+          				<table width="95%"  border="0" cellspacing="0" cellpadding="0">
+                			<tr>
+                  				<td width="80%"><strong><?= $row['customer_id']; ?></strong>
+                  				</td>
+                			</tr>
+          				</table>
+          			</td>
+            	</tr>
 
-            <tr>
+            	<tr>
+            		<td class="TextMain1">Name</td>
+          			<td class="TextMain1">
+          				<table width="95%"  border="0" cellspacing="0" cellpadding="0">
+                			<tr>
+                  				<td width="80%"><?= $row['title'].' '.$row['first_name'].' '.$row['last_name']; ?>
+                  				</td>
+                			</tr>
+          				</table>
+          			</td>
+            	</tr>
 
-              <td class="TextMain1">State</td>
+            	<tr>
+            		<td class="TextMain1" width="12%">Date of Birth</td>
+          			<td class="TextMain1">
+          				<table width="95%"  border="0" cellspacing="0" cellpadding="0">
+                			<tr>
+                  				<td width="80%"><?= date('d-m-Y', strtotime($row['dob'])); ?>
+                  				</td>
+                			</tr>
+          				</table>
+          			</td>
+            	</tr>
 
-              <td class="TextMain1"><table width="95%"  border="0" cellspacing="0" cellpadding="0">
+            	<tr>
+            		<td class="TextMain1" width="12%">Profession</td>
+          			<td class="TextMain1">
+          				<table width="95%"  border="0" cellspacing="0" cellpadding="0">
+                			<tr>
+                  				<td width="40%"><?= $row['professional_role']; ?>
+                  				</td>
+                			</tr>
+          				</table>
+          			</td>
+            	</tr>
 
-                <tr>
+            	<tr>
+            		<td class="TextMain1" width="12%">Specialization</td>
+          			<td class="TextMain1">
+          				<table width="95%"  border="0" cellspacing="0" cellpadding="0">
+                			<tr>
+                  				<td width="40%"><?= $row['speciality']; ?>
+                  				</td>
+                  				<?php if(trim($row['speciality_others']) != ''): ?>
+                  					<td width="40%"><?= $row['speciality']; ?></td>
+                  				<?php endif; ?>
+                			</tr>
+          				</table>
+          			</td>
+            	</tr>
 
-                  <td width="35%"><strong>Assam</strong></td>
 
-                  <td width="16%">City</td>
+            	<tr>
+            		<td class="TextMain1" width="12%">Workplace</td>
+          			<td class="TextMain1">
+          				<table width="95%"  border="0" cellspacing="0" cellpadding="0">
+                			<tr>
+                  				<td width="40%"><?= $row['main_workplace_type']; ?></td>
+                			</tr>
+          				</table>
+          			</td>
+            	</tr>
 
-                  <td width="49%"><strong>Guwahati</strong></td>
+            	<tr>
+            		<td class="TextMain1" width="14%">Institution / Company Name</td>
+          			<td class="TextMain1">
+          				<table width="95%"  border="0" cellspacing="0" cellpadding="0">
+                			<tr>
+                  				<td width="40%"><?= $row['institution']; ?></td>
+                			</tr>
+          				</table>
+          			</td>
+            	</tr>
 
-                </tr>
+            	<tr>
+            		<td class="TextMain1" width="14%">Department/ Section Name </td>
+          			<td class="TextMain1">
+          				<table width="95%"  border="0" cellspacing="0" cellpadding="0">
+                			<tr>
+                  				<td width="20%"><?= $row['department']; ?></td>
+                  				<td width="20%">Position</td>
+                  				<td width="40%"><?= $row['position']; ?></td>
+                			</tr>
+          				</table>
+          			</td>
+            	</tr>
 
-              </table></td>
+            	<tr>
+            		<td class="TextMain1" width="14%">Address</td>
+          			<td class="TextMain1">
+          				<table width="95%"  border="0" cellspacing="0" cellpadding="0">
+                			<tr>
+                  				<td width="20%"><?= $row['address_1']; ?></td>
+                  				<?php if($row['address_1'] != ''): ?>
+                  				<td width="20%"><?= $row['address_2']; ?></td>
+                  				<?php endif; ?>	
+                  				<?php if($row['address_1'] != ''): ?>
+                  				<td width="20%"><?= $row['address_3']; ?></td>
+                  				<?php endif; ?>	
+                			</tr>
+          				</table>
+          			</td>
+            	</tr>
 
-            </tr>
+            	<tr>
+            		<td class="TextMain1" width="14%">State</td>
+          			<td class="TextMain1">
+          				<table width="95%"  border="0" cellspacing="0" cellpadding="0">
+                			<tr>
+                  				<td width="35%"><?= $row['state']; ?></td>
 
-            <tr>
+                  				<td width="25%">City</td>
+                  				<td width="30%"><?= $row['city']; ?></td>
+                			</tr>
+          				</table>
+          			</td>
+            	</tr>
 
-              <td class="TextMain1">Country</td>
+            	<tr>
+              		<td class="TextMain1">Country</td>
+              		<td class="TextMain1">
+	              		<table width="95%"  border="0" cellspacing="0" cellpadding="0">
+		                	<tr>
+		                		<td width="35%"><?= $row['country']; ?></td>
 
-              <td class="TextMain1"><table width="95%"  border="0" cellspacing="0" cellpadding="0">
+		                  		<td width="25%">PIN</td>
 
-                <tr>
+		                  		<td width="30%"><?= $row['pin']; ?></td>
+		                	</tr>
+	              		</table>
+              		</td>
+            	</tr>
 
-                  <td width="35%"><strong>India</strong></td>
+            	<tr>
+              		<td class="TextMain1">Mobile</td>
+              		<td class="TextMain1">
+	              		<table width="95%"  border="0" cellspacing="0" cellpadding="0">
+		                	<tr>
+		                		<td width="35%"><?= $row['mobile']; ?></td>
 
-                  <td width="16%">PINCODE</td>
+		                  		<td width="25%">Email</td>
 
-                  <td width="49%"><strong>781028</strong></td>
+		                  		<td width="30%"><?= $row['email']; ?></td>
+		                	</tr>
+	              		</table>
+              		</td>
+            	</tr>
 
-                </tr>
+            	<tr>
+            		<td class="TextMain1" width="14%">Nationality</td>
+          			<td class="TextMain1">
+          				<table width="95%"  border="0" cellspacing="0" cellpadding="0">
+                			<tr>
+                  				<td width="40%"><?= $row['nationality']; ?></td>
+                			</tr>
+          				</table>
+          			</td>
+            	</tr>
 
-              </table></td>
+            	<?php if($row['passport_number'] != ''): ?>
+            	<tr>
+              		<td class="TextMain1">Passport Number</td>
+              		<td class="TextMain1">
+	              		<table width="95%"  border="0" cellspacing="0" cellpadding="0">
+		                	<tr>
+		                		<td width="35%"><?= $row['passport_number']; ?></td>
 
-            </tr>
+		                  		<td width="16%">Valid Upto</td>
 
-            <tr>
+		                  		<td width="30%"><?= $row['valid_upto']; ?></td>
 
-              <td class="TextMain1">Mobile Phone </td>
+		                  		<td width="20%">Issued By</td>
 
-              <td class="TextMain1"><strong>9706125041</strong></td>
+		                  		<td width="49%"><?= $row['issued_by']; ?></td>
+		                	</tr>
+	              		</table>
+              		</td>
+            	</tr>
+            	<?php endif; ?>
 
-            </tr>
-
-           
+           </tbody>
 
             <tr>
 
               <td colspan="2" class="TextMain1"><hr /></td>
 
               </tr>
-
-            
-
             <tr>
 
               <td class="TextMain1">&nbsp;</td>
@@ -511,14 +702,26 @@ body {
       </tr>
 
       <tr>
-
         <td>&nbsp;</td>
-
       </tr>
 
+      <tr>
+      	<td><button class="myButton" onclick="PrintElem('.printArea')"><i class="fa fa-print" aria-hidden="true"></i>
+Print</button>
+ 
+      	</td>
+      </tr>
     </table></td>
 
+    
   </tr>
+
+<?php else: ?>
+
+	<tr>
+		<td>FAILED</td>
+	</tr>
+<?php endif; ?>
 
   <tr>
 
@@ -553,7 +756,36 @@ body {
 </table>
 
 </body>
+<script type="text/javascript">
 
+    function PrintElem(elem)
+    {
+    	//window.print();
+        Popup($(elem).html());
+    }
+
+    function Popup(data) 
+    {
+        var mywindow = window.open('', '', 'height=400,width=600');
+        mywindow.document.write('<html><head><title></title>');
+        mywindow.document.write('<link rel="stylesheet" href="http://ami.dev/css/style.css" type="text/css" />');
+        mywindow.document.write('<style>body {font-size: 10px;line-height: 16px;}</style>');
+        mywindow.document.write('</head><body >');
+        mywindow.document.write('<table width="100%" border="0" cellspacing="0" cellpadding="0"  style="table-layout: fixed; width: 100%;">');
+        mywindow.document.write(data);
+        mywindow.document.write('</table>');
+        mywindow.document.write('</body></html>');
+
+        mywindow.document.close(); // necessary for IE >= 10
+        mywindow.focus(); // necessary for IE >= 10
+
+        mywindow.print();
+        mywindow.close();
+
+        return true;
+    }
+
+</script>
 </html>
 
 <?php ob_end_flush();?>
